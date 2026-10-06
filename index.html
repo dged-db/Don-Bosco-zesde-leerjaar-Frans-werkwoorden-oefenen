@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don Bosco - Franse Werkwoorden Vervoegen</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dbBlue: '#00539C',
+                        dbOrange: '#FF6B35',
+                        dbYellow: '#FFC857',
+                        dbLightBg: '#F4F7F6',
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .print-card {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-dbLightBg text-slate-800 min-h-screen flex flex-col font-sans selection:bg-dbYellow selection:text-slate-900">
+
+    <header class="bg-dbBlue text-white shadow-md no-print border-b-4 border-dbOrange">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white text-dbBlue p-3 rounded-2xl shadow-inner font-black text-2xl">
+                    <i class="fa-solid fa-language text-dbOrange"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-display font-bold tracking-wide">Don Bosco - Français</h1>
+                    <p class="text-xs md:text-sm text-blue-100 font-semibold opacity-90">Conjugaison des Verbes: Generator & Oefenplatform</p>
+                </div>
+            </div>
+            
+            <div class="bg-blue-900/40 p-1.5 rounded-xl flex gap-1 border border-blue-400/30">
+                <button id="btn-mode-digital" onclick="switchMode('digital')" class="px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 bg-dbOrange text-white shadow-sm">
+                    <i class="fa-solid fa-laptop-code"></i> Digitaal Oefenen
+                </button>
+                <button id="btn-mode-print" onclick="switchMode('print')" class="px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 text-white hover:bg-white/10">
+                    <i class="fa-solid fa-print"></i> Werkblad Generator
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6">
+
+        <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6 no-print">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-4">
+                <div class="flex items-center gap-2 text-dbBlue font-display font-bold text-lg">
+                    <i class="fa-solid fa-sliders text-dbOrange"></i> Instellingen & Niveaus
+                </div>
+                <div class="text-xs bg-slate-100 px-3 py-1.5 rounded-full text-slate-600 font-semibold">
+                    Target: Franse Werkwoordvervoeging
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Niveau</label>
+                    <select id="filter-level" onchange="generateNewSet()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-dbBlue">
+                        <option value="basis">🟢 Basis (5e leerjaar - Présent)</option>
+                        <option value="kern" selected>🟡 Kern (6e leerjaar - Présent / Uitbreiding)</option>
+                        <option value="uitdagend">🔴 Uitdagend (1e graad sec. - Gemengde tijden)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Werkwoorden</label>
+                    <select id="filter-verb" onchange="generateNewSet()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-dbBlue">
+                        <option value="all">⚡ Alle werkwoorden door elkaar</option>
+                        <option value="être">être (zijn)</option>
+                        <option value="avoir">avoir (hebben)</option>
+                        <option value="aller">aller (gaan)</option>
+                        <option value="pouvoir">pouvoir (kunnen/mogen)</option>
+                        <option value="vouloir">vouloir (willen)</option>
+                        <option value="faire">faire (maken/doen)</option>
+                        <option value="-er">-er werkwoorden (regelm.)</option>
+                    </select>
+                </div>
+
+                <div class="sm:col-span-2 lg:col-span-2 flex items-end gap-2">
+                    <button onclick="generateNewSet()" class="flex-1 bg-dbBlue hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-sm hover:shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> Genereer Nieuwe Zinnen
+                    </button>
+                    <button id="btn-toggle-answers" onclick="toggleAnswers()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-key"></i> <span id="ans-btn-text">Toon Sleutel</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Digital Mode Container -->
+        <section id="mode-digital-container" class="space-y-6">
+            <div class="bg-gradient-to-r from-dbBlue to-indigo-900 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <span class="bg-dbOrange text-xs font-extrabold uppercase px-2.5 py-1 rounded-md tracking-wider">Interactief Oefenen</span>
+                    <h2 class="text-2xl font-display font-bold mt-1">Conjugaison des Verbes (Frans)</h2>
+                    <p class="text-blue-100 text-sm">Vul de juiste Franse werkwoordsvorm in. Het infinitief staat steeds vermeld.</p>
+                </div>
+                <div class="flex items-center gap-4 bg-white/10 px-5 py-3 rounded-xl backdrop-blur-sm border border-white/20">
+                    <div class="text-center">
+                        <div class="text-xs uppercase text-blue-200 font-bold">Score</div>
+                        <div id="score-display" class="text-3xl font-display font-bold text-dbYellow">0 / 0</div>
+                    </div>
+                    <div class="text-3xl text-white/30">|</div>
+                    <button onclick="checkDigitalAnswers()" class="bg-dbOrange hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl shadow transition transform active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Controleer!
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedback-banner" class="hidden rounded-2xl p-4 transition-all duration-300"></div>
+
+            <div id="digital-questions-list" class="space-y-3"></div>
+
+            <div class="flex justify-end pt-4">
+                <button onclick="checkDigitalAnswers()" class="bg-dbOrange hover:bg-orange-600 text-white font-extrabold text-lg px-8 py-3 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Antwoorden Controleren
+                </button>
+            </div>
+        </section>
+
+        <!-- Printable Worksheet Container -->
+        <section id="mode-print-container" class="hidden space-y-6">
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 no-print flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-amber-500 text-white rounded-xl">
+                        <i class="fa-solid fa-file-pdf text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">Printklaar Werkblad Frans</h3>
+                        <p class="text-xs text-slate-600">Geformatteerd voor A4. Inclusief optionele correctiesleutel.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="window.print()" class="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Afdrukken / Opslaan als PDF
+                    </button>
+                </div>
+            </div>
+
+            <div id="printable-worksheet" class="bg-white p-6 md:p-10 rounded-2xl shadow-md border border-slate-200 print-card">
+                <div class="border-b-2 border-slate-800 pb-4 mb-6 flex justify-between items-end">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Don Bosco - Leerstof Frans</span>
+                        <h1 class="text-2xl md:text-3xl font-display font-bold text-slate-900">Grammaire: La conjugaison</h1>
+                        <p id="print-subtitle" class="text-xs text-slate-600 mt-1 italic">Niveau: Kern</p>
+                    </div>
+                    <div class="text-right text-xs space-y-2 font-medium">
+                        <div><strong>Nom:</strong> <span class="inline-block w-36 border-b border-slate-400"></span></div>
+                        <div><strong>Date:</strong> <span class="inline-block w-36 border-b border-slate-400"></span></div>
+                        <div><strong>Score:</strong> <span class="inline-block w-16 border-b border-slate-400"></span> / <span id="print-max-score">20</span></div>
+                    </div>
+                </div>
+
+                <div class="mb-4 text-xs font-semibold text-slate-700 bg-slate-100 p-2.5 rounded-lg border border-slate-200 italic">
+                    📌 <strong>Consigne:</strong> Complète les phrases avec la forme correcte du verbe indiqué entre parenthèses.
+                </div>
+
+                <div id="print-questions-list" class="grid grid-cols-1 gap-y-3.5 text-sm md:text-base leading-relaxed"></div>
+
+                <div class="mt-8 pt-4 border-t border-slate-300 flex justify-between items-center text-xs text-slate-500">
+                    <span>© Don Bosco - Français Werkbladenreeks</span>
+                    <span>Pagina 1 / 1</span>
+                </div>
+            </div>
+
+            <div id="printable-answer-key" class="hidden bg-white p-6 md:p-10 rounded-2xl shadow-md border border-slate-200 print-card page-break mt-8">
+                <div class="border-b-2 border-emerald-600 pb-3 mb-6 flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest block">Don Bosco - Correctiesleutel</span>
+                        <h2 class="text-xl font-display font-bold text-slate-900">CORRECTIESLEUTEL / CLÉ DE CORRECTION</h2>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Zelfcorrectie / Leerkracht</span>
+                </div>
+
+                <div id="print-answers-list" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 text-sm"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 no-print mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
+            <p class="font-bold text-slate-300">Don Bosco — Digitaal Oefenplatform Franse Werkwoorden</p>
+            <p>Vervoegingen van être, avoir, aller, pouvoir, vouloir, faire en werkwoorden op -er.</p>
+        </div>
+    </footer>
+
+    <script>
+        const DATABASE = {
+            basis: [
+                { inf: "être", context: "Je (être) ___ très content aujourd'hui.", ans: "suis", verb: "être" },
+                { inf: "être", context: "Tu (être) ___ à la maison?", ans: "es", verb: "être" },
+                { inf: "être", context: "Il (être) ___ un grand garçon.", ans: "est", verb: "être" },
+                { inf: "être", context: "Nous (être) ___ prêts pour l'examen.", ans: "sommes", verb: "être" },
+                { inf: "être", context: "Vous (être) ___ de Don Bosco?", ans: "êtes", verb: "être" },
+                { inf: "être", context: "Elles (être) ___ très gentilles.", ans: "sont", verb: "être" },
+                
+                { inf: "avoir", context: "J' (avoir) ___ un nouveau vélo.", ans: "ai", verb: "avoir" },
+                { inf: "avoir", context: "Tu (avoir) ___ un frère ou une sœur?", ans: "as", verb: "avoir" },
+                { inf: "avoir", context: "Elle (avoir) ___ dix ans.", ans: "a", verb: "avoir" },
+                { inf: "avoir", context: "Nous (avoir) ___ un grand chien.", ans: "avons", verb: "avoir" },
+                { inf: "avoir", context: "Vous (avoir) ___ des devoirs?", ans: "avez", verb: "avoir" },
+                { inf: "avoir", context: "Ils (avoir) ___ faim.", ans: "ont", verb: "avoir" },
+
+                { inf: "aller", context: "Je (aller) ___ à l'école à pied.", ans: "vais", verb: "aller" },
+                { inf: "aller", context: "Tu (aller) ___ au cinéma ce soir?", ans: "vas", verb: "aller" },
+                { inf: "aller", context: "Mon ami (aller) ___ à la piscine.", ans: "va", verb: "aller" },
+                { inf: "aller", context: "Nous (aller) ___ au parc.", ans: "allons", verb: "aller" },
+                { inf: "aller", context: "Vous (aller) ___ bien?", ans: "allez", verb: "aller" },
+                { inf: "aller", context: "Les enfants (aller) ___ au jardin.", ans: "vont", verb: "aller" },
+
+                { inf: "pouvoir", context: "Je (pouvoir) ___ t'aider?", ans: "peux", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Tu (pouvoir) ___ ouvrir la porte?", ans: "peux", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Le prof (pouvoir) ___ expliquer la leçon.", ans: "peut", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Nous (pouvoir) ___ jouer dehors.", ans: "pouvons", verb: "pouvoir" },
+
+                { inf: "vouloir", context: "Je (vouloir) ___ une glace au chocolat.", ans: "veux", verb: "vouloir" },
+                { inf: "vouloir", context: "Tu (vouloir) ___ venir avec moi?", ans: "veux", verb: "vouloir" },
+                { inf: "vouloir", context: "Elle (vouloir) ___ apprendre le français.", ans: "veut", verb: "vouloir" },
+                { inf: "vouloir", context: "Nous (vouloir) ___ gagner le match.", ans: "voulons", verb: "vouloir" },
+
+                { inf: "faire", context: "Je (faire) ___ mes devoirs.", ans: "fais", verb: "faire" },
+                { inf: "faire", context: "Tu (faire) ___ du sport?", ans: "fais", verb: "faire" },
+                { inf: "faire", context: "Il (faire) ___ beau aujourd'hui.", ans: "fait", verb: "faire" },
+                { inf: "faire", context: "Nous (faire) ___ un gâteau.", ans: "faisons", verb: "faire" },
+
+                { inf: "parler", context: "Je (parler) ___ français et néerlandais.", ans: "parle", verb: "-er" },
+                { inf: "habiter", context: "Tu (habiter) ___ à Bruxelles?", ans: "habites", verb: "-er" },
+                { inf: "écouter", context: "Sophie (écouter) ___ de la musique.", ans: "écoute", verb: "-er" },
+                { inf: "jouer", context: "Nous (jouer) ___ au football.", ans: "jouons", verb: "-er" },
+                { inf: "regarder", context: "Vous (regarder) ___ la télévision.", ans: "regardez", verb: "-er" },
+                { inf: "aimer", context: "Ils (aimer) ___ les vacances.", ans: "aiment", verb: "-er" }
+            ],
+            
+            kern: [
+                { inf: "être", context: "Mes parents (être) ___ très fiers de moi.", ans: "sont", verb: "être" },
+                { inf: "être", context: "Pourquoi (être) ___-tu en retard?", ans: "es", verb: "être" },
+                { inf: "être", context: "En classe, nous (être) ___ toujours attentifs.", ans: "sommes", verb: "être" },
+                { inf: "avoir", context: "Les élèves (avoir) ___ un contrôle de français.", ans: "ont", verb: "avoir" },
+                { inf: "avoir", context: "Est-ce que vous (avoir) ___ votre livre?", ans: "avez", verb: "avoir" },
+                { inf: "avoir", context: "Mon frère et moi (avoir) ___ une nouvelle console.", ans: "avons", verb: "avoir" },
+                
+                { inf: "aller", context: "Où (aller) ___-vous pour les vacances?", ans: "allez", verb: "aller" },
+                { inf: "aller", context: "Mes cousins (aller) ___ à la mer du Nord.", ans: "vont", verb: "aller" },
+                { inf: "aller", context: "Demain, je (aller) ___ rendre visite à ma grand-mère.", ans: "vais", verb: "aller" },
+
+                { inf: "pouvoir", context: "Est-ce que nous (pouvoir) ___ partir plus tôt?", ans: "pouvons", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Vous (pouvoir) ___ répéter la question, s'il vous plaît?", ans: "pouvez", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Mes amis ne (pouvoir) ___ pas venir à ma fête.", ans: "peuvent", verb: "pouvoir" },
+
+                { inf: "vouloir", context: "Que (vouloir) ___-vous commander?", ans: "voulez", verb: "vouloir" },
+                { inf: "vouloir", context: "Les enfants (vouloir) ___ jouer au parc.", ans: "veulent", verb: "vouloir" },
+                { inf: "vouloir", context: "Ma sœur (vouloir) ___ devenir médecin.", ans: "veut", verb: "vouloir" },
+
+                { inf: "faire", context: "Vous (faire) ___ une promenade en forêt?", ans: "faites", verb: "faire" },
+                { inf: "faire", context: "Ils (faire) ___ beaucoup d'erreurs.", ans: "font", verb: "faire" },
+                { inf: "faire", context: "Qu'est-ce que tu (faire) ___ ce week-end?", ans: "fais", verb: "faire" },
+
+                { inf: "travailler", context: "Tous les élèves (travailler) ___ silencieusement.", ans: "travaillent", verb: "-er" },
+                { inf: "manger", context: "Nous (manger) ___ une pomme délicieuse.", ans: "mangeons", verb: "-er" },
+                { inf: "commencer", context: "Nous (commencer) ___ la leçon à huit heures.", ans: "commençons", verb: "-er" },
+                { inf: "danser", context: "Laura et Marie (danser) ___ très bien.", ans: "dansent", verb: "-er" },
+                { inf: "chercher", context: "Où (chercher) ___-tu tes clés?", ans: "cherches", verb: "-er" },
+                { inf: "adorer", context: "J' (adorer) ___ faire du vélo.", ans: "adore", verb: "-er" }
+            ],
+
+            uitdagend: [
+                { inf: "être", context: "L'année dernière, j' (être) ___ à Paris.", ans: "ai été", verb: "être" },
+                { inf: "être", context: "Dans dix minutes, nous (être) ___ à la gare.", ans: "allons être", verb: "être" },
+                { inf: "être", context: "Elles ne (être) ___ pas d'accord avec nous.", ans: "sont", verb: "être" },
+
+                { inf: "avoir", context: "Hier soir, nous (avoir) ___ un problème.", ans: "avons eu", verb: "avoir" },
+                { inf: "avoir", context: "Tu (avoir) ___ peur pendant le film?", ans: "as eu", verb: "avoir" },
+                { inf: "avoir", context: "Demain, ils (avoir) ___ leur résultat.", ans: "vont avoir", verb: "avoir" },
+
+                { inf: "aller", context: "La semaine passée, elle (aller) ___ au musée.", ans: "est allée", verb: "aller" },
+                { inf: "aller", context: "Ce soir, je ne (aller) ___ pas sortir.", ans: "vais", verb: "aller" },
+
+                { inf: "pouvoir", context: "Hier, je n' (pouvoir) ___ pas téléphoner.", ans: "ai pas pu", verb: "pouvoir" },
+                { inf: "pouvoir", context: "Est-ce qu'ils (pouvoir) ___ résoudre ce problème?", ans: "peuvent", verb: "pouvoir" },
+
+                { inf: "vouloir", context: "Elle n' (vouloir) ___ pas manger ses légumes.", ans: "a pas voulu", verb: "vouloir" },
+                { inf: "vouloir", context: "Dans le futur, nous (vouloir) ___ voyager partout.", ans: "allons vouloir", verb: "vouloir" },
+
+                { inf: "faire", context: "Qu'est-ce que vous (faire) ___ hier après-midi?", ans: "avez fait", verb: "faire" },
+                { inf: "faire", context: "Demain, il (faire) ___ de la natation.", ans: "va faire", verb: "faire" },
+
+                { inf: "regarder", context: "Hier, nous (regarder) ___ un super film.", ans: "avons regardé", verb: "-er" },
+                { inf: "jouer", context: "Les garçons (jouer) ___ toute la journée hier.", ans: "ont joué", verb: "-er" },
+                { inf: "visiter", context: "Cet été, ma famille (visiter) ___ la France.", ans: "va visiter", verb: "-er" },
+                { inf: "donner", context: "Le prof nous (donner) ___ beaucoup de devoirs hier.", ans: "a donné", verb: "-er" },
+                { inf: "chanter", context: "Ils ne (chanter) ___ jamais sous la douche.", ans: "chantent", verb: "-er" },
+                { inf: "écouter", context: "Hier soir, tu (écouter) ___ la radio.", ans: "as écouté", verb: "-er" }
+            ]
+        };
+
+        let currentMode = 'digital';
+        let activeQuestions = [];
+        let answersVisible = false;
+
+        window.onload = function() {
+            generateNewSet();
+        };
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const digitalBtn = document.getElementById('btn-mode-digital');
+            const printBtn = document.getElementById('btn-mode-print');
+            const digitalContainer = document.getElementById('mode-digital-container');
+            const printContainer = document.getElementById('mode-print-container');
+            const ansBtn = document.getElementById('btn-toggle-answers');
+
+            if (mode === 'digital') {
+                digitalBtn.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 bg-dbOrange text-white shadow-sm";
+                printBtn.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 text-white hover:bg-white/10";
+                digitalContainer.classList.remove('hidden');
+                printContainer.classList.add('hidden');
+                ansBtn.classList.add('hidden');
+            } else {
+                printBtn.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 bg-dbOrange text-white shadow-sm";
+                digitalBtn.className = "px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2 text-white hover:bg-white/10";
+                printContainer.classList.remove('hidden');
+                digitalContainer.classList.add('hidden');
+                ansBtn.classList.remove('hidden');
+            }
+
+            generateNewSet();
+        }
+
+        function generateNewSet() {
+            const level = document.getElementById('filter-level').value;
+            const verbFilter = document.getElementById('filter-verb').value;
+
+            let sourceList = [...(DATABASE[level] || DATABASE.kern)];
+
+            // Filter strictly by verb if a specific verb is chosen
+            if (verbFilter !== 'all') {
+                sourceList = sourceList.filter(q => q.verb === verbFilter);
+            }
+
+            // Shuffle questions
+            const shuffled = sourceList.sort(() => 0.5 - Math.random());
+            
+            // Take up to 20 questions
+            activeQuestions = shuffled.slice(0, 20);
+
+            // Update UI totals
+            const totalCount = activeQuestions.length;
+            document.getElementById('score-display').textContent = `0 / ${totalCount}`;
+            const printMaxScore = document.getElementById('print-max-score');
+            if (printMaxScore) printMaxScore.textContent = totalCount;
+
+            if (currentMode === 'digital') {
+                renderDigitalQuestions();
+            } else {
+                renderPrintQuestions();
+            }
+
+            document.getElementById('feedback-banner').classList.add('hidden');
+            answersVisible = false;
+            updateAnswerKeyVisibility();
+        }
+
+        function renderDigitalQuestions() {
+            const container = document.getElementById('digital-questions-list');
+            container.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const parts = q.context.split('___');
+                const qNum = idx + 1;
+
+                const qCard = document.createElement('div');
+                qCard.className = "bg-white p-4 md:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 transition hover:border-slate-300";
+                
+                qCard.innerHTML = `
+                    <div class="flex items-start gap-3 flex-1">
+                        <span class="bg-blue-50 text-dbBlue font-extrabold text-sm px-2.5 py-1 rounded-lg border border-blue-100 min-w-[32px] text-center">${qNum}</span>
+                        <div class="text-base font-semibold text-slate-800 leading-relaxed pt-0.5">
+                            ${parts[0]}
+                            <input type="text" id="digital-input-${idx}" autocomplete="off" spellcheck="false" class="mx-1 border-b-2 border-dbBlue bg-slate-50 focus:bg-amber-50 px-3 py-1 font-bold text-dbBlue text-center rounded-t-md outline-none focus:border-dbOrange transition w-36" placeholder="vervoeging...">
+                            ${parts[1]}
+                        </div>
+                    </div>
+                    <div id="digital-status-${idx}" class="text-xs font-bold hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg"></div>
+                `;
+
+                container.appendChild(qCard);
+            });
+        }
+
+        function checkDigitalAnswers() {
+            let correctCount = 0;
+            const total = activeQuestions.length;
+
+            activeQuestions.forEach((q, idx) => {
+                const input = document.getElementById(`digital-input-${idx}`);
+                const status = document.getElementById(`digital-status-${idx}`);
+                const userAns = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+                const expected = q.ans.toLowerCase().trim();
+
+                status.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+                if (userAns === expected) {
+                    correctCount++;
+                    input.className = "mx-1 border-b-2 border-emerald-500 bg-emerald-50 px-3 py-1 font-bold text-emerald-700 text-center rounded-t-md outline-none w-36";
+                    status.classList.add('bg-emerald-100', 'text-emerald-800');
+                    status.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Très bien!`;
+                } else {
+                    input.className = "mx-1 border-b-2 border-rose-500 bg-rose-50 px-3 py-1 font-bold text-rose-700 text-center rounded-t-md outline-none w-36";
+                    status.classList.add('bg-rose-100', 'text-rose-800');
+                    status.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i> Solution: <strong>${q.ans}</strong>`;
+                }
+            });
+
+            document.getElementById('score-display').textContent = `${correctCount} / ${total}`;
+
+            const banner = document.getElementById('feedback-banner');
+            banner.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'bg-amber-50', 'border-amber-300', 'text-emerald-900', 'text-amber-900');
+            banner.classList.add('border');
+
+            const percentage = total > 0 ? (correctCount / total) * 100 : 0;
+
+            if (percentage === 100) {
+                banner.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-trophy text-3xl text-amber-500 animate-bounce"></i>
+                        <div>
+                            <h3 class="font-bold text-lg">Bravo! Félicitations! 🎉</h3>
+                            <p class="text-sm">Je hebt een score van 100%! Je beheerst de Franse werkwoordvervoegingen uitstekend!</p>
+                        </div>
+                    </div>
+                `;
+            } else if (percentage >= 70) {
+                banner.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-900');
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-star text-3xl text-amber-500"></i>
+                        <div>
+                            <h3 class="font-bold text-lg">Très bien! 👍</h3>
+                            <p class="text-sm">Je hebt ${correctCount} van de ${total} zinnen juist. Bekijk de rode vakjes om te zien wat er beter kan.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                banner.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-lightbulb text-3xl text-amber-500"></i>
+                        <div>
+                            <h3 class="font-bold text-lg">Courage! Blijven oefenen! 💪</h3>
+                            <p class="text-sm">Je behaalde ${correctCount} op ${total}. Oefen nog eens opnieuw of vraag hulp aan de leraar.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function renderPrintQuestions() {
+            const container = document.getElementById('print-questions-list');
+            const answersContainer = document.getElementById('print-answers-list');
+            const levelSelect = document.getElementById('filter-level');
+            const selectedLevelText = levelSelect.options[levelSelect.selectedIndex].text;
+
+            document.getElementById('print-subtitle').textContent = `Niveau: ${selectedLevelText}`;
+
+            container.innerHTML = '';
+            answersContainer.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const parts = q.context.split('___');
+                const qNum = idx + 1;
+
+                const pItem = document.createElement('div');
+                pItem.className = "flex items-baseline gap-2 py-0.5 border-b border-slate-100";
+                pItem.innerHTML = `
+                    <span class="font-bold text-slate-500 w-6 text-right select-none">${qNum}.</span>
+                    <div class="flex-1">
+                        ${parts[0]}
+                        <span class="inline-block border-b-2 border-slate-800 w-36 mx-1 text-center font-bold text-slate-800 print:border-black"></span>
+                        ${parts[1]}
+                    </div>
+                `;
+                container.appendChild(pItem);
+
+                const aItem = document.createElement('div');
+                aItem.className = "flex items-center gap-2 py-1 border-b border-slate-200";
+                aItem.innerHTML = `
+                    <span class="font-bold text-slate-400 w-6">${qNum}.</span>
+                    <span class="font-extrabold text-emerald-800">${q.ans}</span>
+                    <span class="text-xs text-slate-500 italic ml-auto">(${q.inf})</span>
+                `;
+                answersContainer.appendChild(aItem);
+            });
+        }
+
+        function toggleAnswers() {
+            answersVisible = !answersVisible;
+            updateAnswerKeyVisibility();
+        }
+
+        function updateAnswerKeyVisibility() {
+            const answerKeyDiv = document.getElementById('printable-answer-key');
+            const btnText = document.getElementById('ans-btn-text');
+
+            if (answersVisible) {
+                answerKeyDiv.classList.remove('hidden');
+                btnText.textContent = "Verberg Sleutel";
+            } else {
+                answerKeyDiv.classList.add('hidden');
+                btnText.textContent = "Toon Sleutel";
+            }
+        }
+    </script>
+</body>
+</html>
